@@ -16,23 +16,27 @@ export default class ListConvos extends React.Component {
         
 		this.displayName = props.navigation.state.params.displayName
 		this.password = props.navigation.state.params.password
-		this.secret = this.deriveSecret(this.displayName, this.password)
+		// this.secret = this.deriveSecret(this.displayName, this.password)
 		
-		ListConvos.navigationOptions.title = "".concat("You are ", this.displayName, "_", this.secret)
+		// ListConvos.navigationOptions.title = "".concat("You are ", this.displayName, "_", this.secret)
+		ListConvos.navigationOptions.title = "".concat("You are ", this.displayName)
 		
 		this.state = {
             messages: []
         }
 		
-        this.socket = new Socket(this.displayName, this.password, this.secret);
+        // this.socket = new Socket(this.displayName, this.password, this.secret);
+        this.socket = new Socket(this.displayName, this.password, "");
 		
 		// Register on read message
         this.socket.socket.on("privateMessage", (message) => {
 			const content = this.deconstructPrivateMessage(message.text)
 			if (content == null) {return;}
 			
-			if (content[0] == this.displayName && content[1] == this.secret && this.addSet(this.peopleYoureTalkingTo, "".concat(content[2], "_", content[3]))) {this.registerConversation(content[2], content[3])}
-			if (content[2] == this.displayName && content[3] == this.secret && this.addSet(this.peopleYoureTalkingTo, "".concat(content[0], "_", content[1]))) {this.registerConversation(content[0], content[1])}
+			// if (content[0] == this.displayName && content[1] == this.secret && this.addSet(this.peopleYoureTalkingTo, "".concat(content[2], "_", content[3]))) {this.registerConversation(content[2], content[3])}
+			// if (content[2] == this.displayName && content[3] == this.secret && this.addSet(this.peopleYoureTalkingTo, "".concat(content[0], "_", content[1]))) {this.registerConversation(content[0], content[1])}
+			if (content[0] == this.displayName && this.addSet(this.peopleYoureTalkingTo, "".concat(content[2], "_", content[3]))) {this.registerConversation(content[2], content[3])}
+			if (content[2] == this.displayName && this.addSet(this.peopleYoureTalkingTo, "".concat(content[0], "_", content[1]))) {this.registerConversation(content[0], content[1])}
         })
 		
 		// Download message history
@@ -47,7 +51,8 @@ export default class ListConvos extends React.Component {
             placeholder ="To whomst'd've'ly'yaint'nt'ed'ies's'y'es would you like to speak?"
             messages={this.state.messages}
 			onPressAvatar={(userAndSecret) => {
-					const res = (new RegExp("([A-Za-z0-9]*)_([A-Za-z0-9]*)")).exec(userAndSecret.name);
+					// const res = (new RegExp("([A-Za-z0-9]*)_([A-Za-z0-9]*)")).exec(userAndSecret.name);
+					const res = (new RegExp("([A-Za-z0-9]*)")).exec(userAndSecret.name);
 					if (res == null) {return;}
 					if (res.index != 0) {return;}
 					if (res[0].length != res.input.length) {return;}
@@ -56,15 +61,16 @@ export default class ListConvos extends React.Component {
 						{
 							displayName: this.displayName,
 							password: this.password,
-							secret: this.secret,
+							// secret: this.secret,
 							recipient: res[1],
-							recipientSecret: res[2],
+							// recipientSecret: res[2],
 						}
 					)
 				}
 			}
             onSend={(message) => {
-					const res = (new RegExp("([A-Za-z0-9]*)_([A-Za-z0-9]*)")).exec(message[0].text);
+					// const res = (new RegExp("([A-Za-z0-9]*)_([A-Za-z0-9]*)")).exec(message[0].text);
+					const res = (new RegExp("([A-Za-z0-9]*)")).exec(message[0].text);
 					if (res == null) {return;}
 					if (res.index != 0) {return;}
 					if (res[0].length != res.input.length) {return;}
@@ -73,9 +79,9 @@ export default class ListConvos extends React.Component {
 						{
 							displayName: this.displayName,
 							password: this.password,
-							secret: this.secret,
+							// secret: this.secret,
 							recipient: res[1],
-							recipientSecret: res[2],
+							// recipientSecret: res[2],
 						}
 					)
 				}
@@ -123,7 +129,8 @@ export default class ListConvos extends React.Component {
 	}
 
 	registerConversation(username, secret) {
-		const message = Message.format("".concat(username, "_", secret, " is a hot single in your area!"), "".concat(username, "_", secret))
+		// const message = Message.format("".concat(username, "_", secret, " is a hot single in your area!"), "".concat(username, "_", secret))
+		const message = Message.format("".concat(username, " is a hot single in your area!"), "".concat(username))
 		const updatedMessages = [...this.state.messages, message];
 		this.setState({messages: updatedMessages})
 	}
@@ -145,8 +152,10 @@ export default class ListConvos extends React.Component {
 		if (messages == null) {return;}
 		for (var i = 0; i < messages.length; i++) {
 			const content = messages[i]
-			if (content[0] == this.displayName && content[1] == this.secret && this.addSet(this.peopleYoureTalkingTo, "".concat(content[2], "_", content[3]))) {this.registerConversation(content[2], content[3])}
-			if (content[2] == this.displayName && content[3] == this.secret && this.addSet(this.peopleYoureTalkingTo, "".concat(content[0], "_", content[1]))) {this.registerConversation(content[0], content[1])}
+			// if (content[0] == this.displayName && content[1] == this.secret && this.addSet(this.peopleYoureTalkingTo, "".concat(content[2], "_", content[3]))) {this.registerConversation(content[2], content[3])}
+			// if (content[2] == this.displayName && content[3] == this.secret && this.addSet(this.peopleYoureTalkingTo, "".concat(content[0], "_", content[1]))) {this.registerConversation(content[0], content[1])}
+			if (content[0] == this.displayName && this.addSet(this.peopleYoureTalkingTo, "".concat(content[2], "_", content[3]))) {this.registerConversation(content[2], content[3])}
+			if (content[2] == this.displayName && this.addSet(this.peopleYoureTalkingTo, "".concat(content[0], "_", content[1]))) {this.registerConversation(content[0], content[1])}
 		}
 	}
 }

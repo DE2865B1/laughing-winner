@@ -14,17 +14,19 @@ export default class ConvoThread extends React.Component {
         
 		this.displayName = props.navigation.state.params.displayName
 		this.password = props.navigation.state.params.password
-		this.secret = props.navigation.state.params.secret
+		// this.secret = props.navigation.state.params.secret
 		this.recipient = props.navigation.state.params.recipient
-		this.recipientSecret = props.navigation.state.params.recipientSecret
+		// this.recipientSecret = props.navigation.state.params.recipientSecret
 		
-		ConvoThread.navigationOptions.title = "".concat("You are talking to ", this.recipient, "_", this.recipientSecret)
+		// ConvoThread.navigationOptions.title = "".concat("You are talking to ", this.recipient, "_", this.recipientSecret)
+		ConvoThread.navigationOptions.title = "".concat("You are talking to ", this.recipient)
 		
 		this.state = {
             messages: []
         }
 		
-        this.socket = new Socket(this.displayName, this.password, this.secret);
+        // this.socket = new Socket(this.displayName, this.password, this.secret);
+        this.socket = new Socket(this.displayName, this.password);
 		
 		// Register on read message
         this.socket.socket.on("privateMessage", (message) => {
@@ -50,15 +52,19 @@ export default class ConvoThread extends React.Component {
         return (
             <GiftedChat
             messages={this.state.messages}
-            onSend={(message) => {this.sendPrivateMessage(this.recipient, this.recipientSecret, message[0].text)}}
+            // onSend={(message) => {this.sendPrivateMessage(this.recipient, this.recipientSecret, message[0].text)}}
+            onSend={(message) => {this.sendPrivateMessage(this.recipient, message[0].text)}}
             inverted={false}
             />
         )
     }
 
 	// Wrapper function
-    sendPrivateMessage(recipient, recipientSecret, message) {
-        this.socket.sendPrivateMessage(recipient, recipientSecret, message);
+    // sendPrivateMessage(recipient, recipientSecret, message) {
+        // this.socket.sendPrivateMessage(recipient, recipientSecret, message);
+    // }
+    sendPrivateMessage(recipient, message) {
+        this.socket.sendPrivateMessage(recipient, message);
     }
 
 	assertMessage(username, password, message) {
@@ -107,8 +113,10 @@ export default class ConvoThread extends React.Component {
 		for (var i = 0; i < messages.length; i++) {
 			const content = messages[i]
 			var inThisConvo = false
-			if (content[0] == this.displayName && content[1] == this.secret && content[2] == this.recipient && content[3] == this.recipientSecret) {inThisConvo = true}
-			if (content[0] == this.recipient && content[1] == this.recipientSecret && content[2] == this.displayName && content[3] == this.secret) {inThisConvo = true}
+			// if (content[0] == this.displayName && content[1] == this.secret && content[2] == this.recipient && content[3] == this.recipientSecret) {inThisConvo = true}
+			// if (content[0] == this.recipient && content[1] == this.recipientSecret && content[2] == this.displayName && content[3] == this.secret) {inThisConvo = true}
+			if (content[0] == this.displayName && content[2] == this.recipient) {inThisConvo = true}
+			if (content[0] == this.recipient && content[2] == this.displayName) {inThisConvo = true}
 			if (!inThisConvo) {continue}
 
 			this.readMessage(Message.format(content[4], content[0]))

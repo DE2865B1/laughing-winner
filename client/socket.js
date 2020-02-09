@@ -6,23 +6,41 @@ class Socket {
 
     socket = null;
     
-    constructor(displayName, password, secret) {
+    // constructor(displayName, password, secret) {
+        // this.socket = io(apiUrl);
+        // this.displayName = displayName;
+        // this.password = password;
+		// this.secret = secret
+    // }
+
+    // sendPrivateMessage(recipient, recipientSecret, message) {
+		// const text = this.constructPrivateMessage(recipient, recipientSecret, message)
+        // this.socket.emit("privateMessage", {
+			// username: this.displayName,
+			// message: text,
+		// });
+    // }
+
+	// constructPrivateMessage(recipient, recipientSecret, message) {
+		// return "".concat(this.displayName, "_", this.secret, "_", recipient, "_", recipientSecret, "_", message)
+	// }
+    
+    constructor(displayName, password) {
         this.socket = io(apiUrl);
         this.displayName = displayName;
         this.password = password;
-		this.secret = secret
     }
 
-    sendPrivateMessage(recipient, recipientSecret, message) {
-		const text = this.constructPrivateMessage(recipient, recipientSecret, message)
+    sendPrivateMessage(recipient, message) {
+		const text = this.constructPrivateMessage(recipient, message)
         this.socket.emit("privateMessage", {
 			username: this.displayName,
 			message: text,
 		});
     }
 
-	constructPrivateMessage(recipient, recipientSecret, message) {
-		return "".concat(this.displayName, "_", this.secret, "_", recipient, "_", recipientSecret, "_", message)
+	constructPrivateMessage(recipient, message) {
+		return "".concat(this.displayName, "_", "", "_", recipient, "_", "", "_", message)
 	}
 	
 	downloadPrivateHistory() {
